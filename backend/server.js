@@ -2,7 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const authRouter = require('./routes/authRouter')
 const connectToMongoDB = require('./models/db')
-
+const passport = require('./middlewares/passportConfig'); // Import Passport configuration
+const googleAuthRouter = require('./routes/googleAuthRouter');
 
 const app = express()
 dotenv.config();
@@ -13,7 +14,10 @@ const cors = require('cors')
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(passport.initialize());
 app.use('/api/auth', authRouter);
+app.use('/api/auth', googleAuthRouter); // Add Google OAuth routes
+
 app.listen(PORT, () => {
     connectToMongoDB();
     console.log(`Server is started at ${PORT} `);

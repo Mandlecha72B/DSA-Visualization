@@ -11,6 +11,8 @@ import ForgotPassword from './components/ForgotPassword';
 import { Toaster } from 'react-hot-toast';
 import RefreshHandler from './components/RefreshHandler';
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import GoogleCallback from './components/GoogleCallback';
 
 
 
@@ -21,61 +23,67 @@ function App() {
     return isAuthenticated ? element : <Navigate to="/login" />
   }
   return (
-    
-      <Router>
-        {/* Toaster for showing toast notifications*/ }
-        <Toaster position="top-right" reverseOrder={false} />
-        <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
-        <Routes>
 
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/homepage" element={<PrivateRoute element={<HomePage />} />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
-        </Routes>
-      </Router>
+    <Router>
+      {/* Toaster for showing toast notifications*/}
+      <Toaster position="top-right" reverseOrder={false} />
+      <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
+      <Routes>
+
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/homepage" element={<PrivateRoute element={<HomePage />} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/google-callback" element={<GoogleCallback />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
+      </Routes>
+    </Router>
 
 
   );
 }
+const handleGoogleLogin = () => {
+  // Redirect user to Google OAuth login URL
+  window.location.href = "http://localhost:3000/api/auth/google";
+  
+};
 
 const LandingPage = () => {
   return (
     <div className="relative h-screen overflow-hidden bg-cover bg-center flex justify-center items-center" style={{ backgroundImage: 'url("/backgroundimage.jpeg")' }}>
-      {/* Background animation*/ }
+      {/* Background animation*/}
       <div className="animated-bar-container">
         <AnimatedBar />
       </div>
 
-      {/* Content overlay*/ }
+      {/* Content overlay*/}
       <div className="text-center text-white shadow-lg p-8 bg-black bg-opacity-60 rounded-xl z-20 max-w-lg mx-auto space-y-6">
         {/* Title */}
         <h1 className="text-5xl font-extrabold mb-4 tracking-wide">ALGOSPHERE</h1>
         <p className="text-xl mb-6">Visualizing Data Structures and Algorithms</p>
 
-        {/* Buttons*/ }
+        {/* Buttons*/}
         <div className="space-y-4">
-          {/* Login Button*/ }
+          {/* Login Button*/}
           <Link
             to="/login"
             className="inline-block w-full py-3 px-6 text-lg font-medium text-white bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
           >
             Login
           </Link>
-          {/* Sign-Up Button*/ }
+          {/* Sign-Up Button*/}
           <Link
             to="/signup"
             className="inline-block w-full py-3 px-6 text-lg font-medium text-white bg-gradient-to-r from-green-400 to-teal-500 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
           >
             Sign Up
           </Link>
-          {/* Google Sign-In Button*/ }
+          {/* Google Sign-In Button*/}
           <Link
             to="/"
             className="inline-flex items-center justify-center w-full py-3 px-6 text-lg font-medium text-gray-800 bg-white rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
-            
+            onClick={handleGoogleLogin}
 
           >
             <img
