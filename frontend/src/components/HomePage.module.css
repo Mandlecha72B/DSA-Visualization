@@ -1,0 +1,46 @@
+.homepage {
+    text-align: center;
+    color: var(--kombu-green);
+    height: 100vh;
+    background: rgba(175, 181, 157, 0.8);
+    /* Semi-transparent Laurel Green */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.homepageLogo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+.homepageTitle {
+    font-size: 3rem;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 10px;
+}
+
+.homepageButtons {
+    margin-top: 20px;
+}
+
+.homepageButtons button {
+    padding: 10px 30px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    background-color: var(--kombu-green);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.homepageButtons button:hover {
+    background-color: var(--artichoke);
+    transform: scale(1.05);
+}
