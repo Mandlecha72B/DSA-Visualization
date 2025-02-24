@@ -17,6 +17,7 @@ app.use(cors());
 app.use(passport.initialize());
 app.use('/api/auth', authRouter);
 app.use('/api/auth', googleAuthRouter); // Add Google OAuth routes
+app.use('/api/user', authRouter);
 
 app.listen(PORT, () => {
     connectToMongoDB();

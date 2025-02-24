@@ -7,21 +7,36 @@ import HomePage from './components/HomePage';
 import AnimatedBar from './components/AnimatedBar'; // Import the AnimatedBar Component
 import { Link } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
-
-import { Toaster } from 'react-hot-toast';
+import { Toaster,toast } from 'react-hot-toast';
 import RefreshHandler from './components/RefreshHandler';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import GoogleCallback from './components/GoogleCallback';
 
+import ArraySimulation from './components/Array/ArraySimulation';
 
+import MCQQuiz from './components/Array/MCQQuiz';
+import ResultsPage from './components/Array/ResultPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
 
   const PrivateRoute = ({ element }) => {
-    return isAuthenticated ? element : <Navigate to="/login" />
+    return isAuthenticated ? element : <Navigate to="/" />
   }
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong. Please try again!");
+    }
+  };
   return (
 
     <Router>
@@ -33,9 +48,12 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/homepage" element={<PrivateRoute element={<HomePage />} />} />
+        <Route path="/homepage" element={<PrivateRoute element={<HomePage handleLogout={handleLogout}/>} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/google-callback" element={<GoogleCallback />} />
+        <Route path="/array-quiz" element={<PrivateRoute element={<MCQQuiz />} />} />
+        <Route path='/results' element={<PrivateRoute element={<ResultsPage />} />} />
+        <Route path="/array" element={<ArraySimulation handleLogout={handleLogout}  />} />
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
@@ -43,10 +61,11 @@ function App() {
 
   );
 }
+
 const handleGoogleLogin = () => {
   // Redirect user to Google OAuth login URL
   window.location.href = "http://localhost:3000/api/auth/google";
-  
+
 };
 
 const LandingPage = () => {
@@ -102,6 +121,42 @@ const LandingPage = () => {
 
 
 export default App;
+
+//SINGLE PAGE APPLICATION
+/*function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const PrivateRoute = ({ element }) => {
+    return isAuthenticated ? element : <Navigate to="/" />
+  }
+  return (
+
+    <Router>
+      {/* Toaster for showing toast notifications}
+      <Toaster position="top-right" reverseOrder={false} />
+      <RefreshHandler setIsAuthenticated={setIsAuthenticated} />
+      <Routes>
+
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/google-callback" element={<GoogleCallback />} />
+        {/* Pages with Header and Circular Menu }
+        <Route element={<MainLayout />}>
+          <Route path="/homepage" element={<PrivateRoute element={<HomePage />} />} />
+          {/* Add more pages here that need the persistent layout }
+        </Route>
+
+        <Route path="*" element={<h1>Not Found</h1>} />
+      </Routes>
+    </Router >
+
+
+  );
+}
+*/
 
 
 

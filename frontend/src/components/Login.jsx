@@ -6,13 +6,13 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
     const navigate = useNavigate();
-    
+
 
     const [loginInfo, setLoginInfo] = useState({
-        
+
         email: '',
         password: '',
-        
+
     });
 
 
@@ -24,14 +24,14 @@ const Login = () => {
         });
     }
 
-    const handleLogin= async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        const {  email, password } = loginInfo;
-        if ( !email || !password ) {
+        const { email, password } = loginInfo;
+        if (!email || !password) {
             toast.error('All fields are required!');
             return;
         }
-        
+
 
         try {
             // Call the signup API
@@ -39,8 +39,10 @@ const Login = () => {
 
             if (response.success) {
                 toast.success(response.message); // Success toast from backend
-                localStorage.setItem('token', response.token); // Save token in local storage
-                localStorage.setItem('user', JSON.stringify(response.user)); // Save user object in local storage
+                localStorage.setItem('token', response.jwtToken); // Save token in local storage
+                const { email, username, profilePicture } = response // Destructure user object from response
+                const obj = { email, username, profilePicture };
+                localStorage.setItem('user', JSON.stringify(obj)); // Save user object in local storage
                 //navigate('/login'); // Redirect to login page
                 navigate('/homepage'); // Redirect to homepage after successful login
             } else {
@@ -89,7 +91,7 @@ const Login = () => {
                             className="input input-bordered input-primary w-full rounded-full px-4 py-2"
                         />
                     </div>
-                    
+
                     <div className="flex justify-center mt-4">
                         <button
                             onClick={handleLogin}
@@ -125,55 +127,4 @@ const Login = () => {
 
 export default Login;
 
-
-/*import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import  styles  from './Login.module.css';
-
-const Login = () => {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-
-    const handleLogin = () => {
-        // Mock login logic - replace with real backend later
-        if (email === 'user@example.com' && password === 'password123') {
-            navigate('/dashboard'); // Redirect to dashboard or home page after successful login
-        } else {
-            setError('Invalid email or password'); // Show error if login fails
-        }
-    };
-
-    return (
-        <div className={styles.loginContainer}>
-            <div className={styles.loginCard}>
-                <h2>Welcome Back!</h2>
-                <p>Please login to your account</p>
-                <div className={styles.inputContainer}>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <span className={styles.focusBorder}></span>
-                </div>
-                <div className={styles.inputContainer}>
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <span className={styles.focusBorder}></span>
-                </div>
-                <button onClick={handleLogin} className={styles.loginBtn}>Login</button>
-                {error && <div className={styles.error}>{error}</div>}
-            </div>
-        </div>
-    );
-};
-
-export default Login;*/
 
