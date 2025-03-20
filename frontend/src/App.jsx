@@ -7,7 +7,7 @@ import HomePage from './components/HomePage';
 import AnimatedBar from './components/AnimatedBar'; // Import the AnimatedBar Component
 import { Link } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
-import { Toaster,toast } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import RefreshHandler from './components/RefreshHandler';
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
@@ -17,10 +17,15 @@ import ArraySimulation from './components/Array/ArraySimulation';
 
 import MCQQuiz from './components/Array/MCQQuiz';
 import ResultsPage from './components/Array/ResultPage';
+import NotesPage from './components/Notes/NotesPage';
+import { useAuthStore } from './components/DiscussionForum/store/useAuthStore';
+import ChatApp from './components/DiscussionForum/ChatApp';
+
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
 
   const PrivateRoute = ({ element }) => {
     return isAuthenticated ? element : <Navigate to="/" />
@@ -30,10 +35,12 @@ function App() {
     try {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      setIsAuthenticated(false); // Ensure authentication state is updated
+      useAuthStore.getState().disconnectSocket(); // Disconnect socket on logout
       toast.success("Logged out successfully");
-      navigate("/");
+      <Navigate to="/" />
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Something went wrong. Please try again!");
     }
   };
@@ -48,12 +55,15 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/homepage" element={<PrivateRoute element={<HomePage handleLogout={handleLogout}/>} />} />
+        <Route path="/homepage" element={<PrivateRoute element={<HomePage handleLogout={handleLogout} />} />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/google-callback" element={<GoogleCallback />} />
         <Route path="/array-quiz" element={<PrivateRoute element={<MCQQuiz />} />} />
         <Route path='/results' element={<PrivateRoute element={<ResultsPage />} />} />
-        <Route path="/array" element={<ArraySimulation handleLogout={handleLogout}  />} />
+        <Route path="/array" element={<ArraySimulation handleLogout={handleLogout} />} />
+        <Route path='/notes' element={<NotesPage />} />
+        <Route path='/discussion-forum' element={<ChatApp />} />
+        
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>

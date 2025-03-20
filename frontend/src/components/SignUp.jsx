@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { signup } from './utils/ApiFunctions';
 
+
 const SignUp = () => {
     const navigate = useNavigate();
     

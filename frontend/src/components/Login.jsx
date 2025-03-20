@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from './utils/ApiFunctions';
 import toast from 'react-hot-toast';
+import { useAuthStore } from './DiscussionForum/store/useAuthStore';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -32,30 +33,30 @@ const Login = () => {
             return;
         }
 
-
         try {
-            // Call the signup API
             const response = await login(loginInfo);
 
             if (response.success) {
-                toast.success(response.message); // Success toast from backend
-                localStorage.setItem('token', response.jwtToken); // Save token in local storage
-                const { email, username, profilePicture } = response // Destructure user object from response
+                toast.success(response.message);
+                localStorage.setItem('token', response.jwtToken);
+
+                const { email, username, profilePicture } = response;
                 const obj = { email, username, profilePicture };
-                localStorage.setItem('user', JSON.stringify(obj)); // Save user object in local storage
-                //navigate('/login'); // Redirect to login page
-                navigate('/homepage'); // Redirect to homepage after successful login
+                localStorage.setItem('user', JSON.stringify(obj));
+
+                // ✅ Ensure socket connection happens before navigation
+                await useAuthStore.getState().connectSocket();
+
+                navigate('/homepage');
             } else {
-                toast.error(response.message); // Error toast from backend
+                toast.error(response.message);
             }
         } catch (error) {
-            console.error(error); // Log for debugging
-            toast.error('Something went wrong. Please try again!'); // Handle network or unexpected errors
+            console.error("❌ Login error:", error);
+            toast.error('Something went wrong. Please try again!');
         }
-
-
-
     };
+
 
     const handleForgotPassword = () => {
         navigate('/forgot-password'); // Navigate to forgot password page

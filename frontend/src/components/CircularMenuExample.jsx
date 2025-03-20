@@ -60,7 +60,7 @@ export default function CircularMenuExample({ iconSizeOverride, itemSizeOverride
                         <BotMessageSquare size={iconSize} />
                     </div>
                 </CircleMenuItem>
-                <CircleMenuItem tooltip="Discussion-Forum" tooltipPlacement={TooltipPlacement.Left}>
+                <CircleMenuItem tooltip="Discussion-Forum" tooltipPlacement={TooltipPlacement.Left} onClick={() => window.open("/discussion-forum", "_blank")}>
                     <div className="p-2 bg-green-500 rounded-full text-white hover:bg-green-600">
                         <MessageCircleMore size={iconSize} />
                     </div>
@@ -75,11 +75,16 @@ export default function CircularMenuExample({ iconSizeOverride, itemSizeOverride
                         <BarChart2 size={iconSize} />
                     </div>
                 </CircleMenuItem>
-                <CircleMenuItem tooltip="Notes" tooltipPlacement={TooltipPlacement.Left}>
+                <CircleMenuItem
+                    tooltip="Notes"
+                    tooltipPlacement={TooltipPlacement.Left}
+                    onClick={() => window.open("/notes", "_blank")}  // Opens NotesPage in a new tab
+                >
                     <div className="p-2 bg-indigo-500 rounded-full text-white hover:bg-indigo-600">
                         <BookOpen size={iconSize} />
                     </div>
                 </CircleMenuItem>
+
                 <CircleMenuItem tooltip="Coding" tooltipPlacement={TooltipPlacement.Left}>
                     <div className="p-2 bg-gray-500 rounded-full text-white hover:bg-gray-600">
                         <SquareTerminal size={iconSize} />

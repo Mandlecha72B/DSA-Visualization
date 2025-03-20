@@ -14,7 +14,9 @@ const Profile = ({ handleLogout }) => {
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
-        if (user && user.profilePicture) {
+        console.log("Loaded user data in Profile component:", user); // Debugging log
+        if (user && user?.profilePicture) {
+            console.log("Loaded user data in Profile component:", user); // Debugging log
             setProfilePicture(user.profilePicture);
         }
     }, []);
