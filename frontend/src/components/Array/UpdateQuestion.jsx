@@ -1,8 +1,39 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import toast from "react-hot-toast";
 
-const UpdateQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) => {
+const UpdateQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex, skippedUpdateQuestion }) => {
     const [array, setArray] = useState([...data.array]); // Initialize array state
+
+    useEffect(() => {
+        if (skippedUpdateQuestion) {
+            console.log("skippedUpdateQuestion changed:", skippedUpdateQuestion);
+            autoSaveUpdateQuestion();
+        }
+    }, [skippedUpdateQuestion]);
+
+    const autoSaveUpdateQuestion = () => {
+
+        const correctArray = [...data.array];
+        correctArray[data.targetIndex] = data.targetValue; // Expected update
+
+
+
+        updateUserAnswers(questionIndex, {
+            initialArray: data.array,
+            userAttempt: "Not Answered",
+            correctArray,
+            targetIndex: data.targetIndex,
+            targetValue: data.targetValue,
+            explanation: `Updated element at index ${data.targetIndex} with value ${data.targetValue}.`,
+            isCorrect: false,
+        });
+        setSkippedUpdateQuestion(false); // Reset the skipped state
+
+
+    }
+
+
+
 
     const handleUpdate = (index) => {
         if (index === data.targetIndex) {
@@ -29,7 +60,7 @@ const UpdateQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) =
             userAttempt,
             correctArray,
             targetIndex: data.targetIndex,
-            targetValue:data.targetValue,
+            targetValue: data.targetValue,
             explanation: `Updated element at index ${data.targetIndex} with value ${data.targetValue}.`,
             isCorrect,
         });

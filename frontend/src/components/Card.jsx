@@ -20,7 +20,7 @@ const Card = ({ title, description }) => {
 
   const handleQuizClick = (e) => {
     e.stopPropagation();
-    navigate("/array-quiz");
+    navigate(`/${formattedTitle}-quiz`); // Dynamic quiz path
   };
 
   const handleInfoClick = (e) => {

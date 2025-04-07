@@ -27,6 +27,7 @@ const ArraySimulation = ({ handleLogout }) => {
         "/car3.png",
         "/car4.png",
         "/car5.png",
+
     ];
     const pseudoCode = {
         append: [
@@ -87,7 +88,7 @@ const ArraySimulation = ({ handleLogout }) => {
         if (history.length > 1) {
             const lastState = history[history.length - 2];
             setParkingSlots(lastState);
-            setHistory(history.slice(0, history.length - 1));
+            //setHistory(history.slice(0, history.length - 1));
         }
 
     };
@@ -130,7 +131,7 @@ const ArraySimulation = ({ handleLogout }) => {
             );
         }
 
-       
+
 
         const newSlots = [...parkingSlots];
         let filledSlots = newSlots.filter(slot => slot !== null).length;

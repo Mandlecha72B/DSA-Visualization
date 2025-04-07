@@ -17,6 +17,9 @@ const MCQQuiz = () => {
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(15);
     const [answeredQuestions, setAnsweredQuestions] = useState({});
+    const [skippedInsertQuestion, setSkippedInsertQuestion] = useState(false); // New state for skipped insert question
+    const [skippedDeleteQuestion, setSkippedDeleteQuestion] = useState(false); // New state for skipped delete question
+    const [skippedUpdateQuestion, setSkippedUpdateQuestion] = useState(false); // New state for skipped update question
     const navigate = useNavigate();
 
     const currentQuestion = allQuestions[currentQuestionIndex];
@@ -47,7 +50,9 @@ const MCQQuiz = () => {
         if (answeredQuestions[currentQuestionIndex]) return;
 
         setSelectedAnswer(option);
-        setAnsweredQuestions((prev) => ({ ...prev, [currentQuestionIndex]: option }));
+
+        // ✅ Store MCQ answer using the same function used for other question types
+        updateUserAnswers(currentQuestionIndex, option);
 
         if (option === currentQuestion.answer) {
             toast.success("Correct Answer 🎉");
@@ -57,27 +62,62 @@ const MCQQuiz = () => {
         }
     };
 
-    const nextQuestion = () => {
+
+    const nextQuestion = async () => {
         if (currentQuestionIndex < allQuestions.length - 1) {
-            setCurrentQuestionIndex((prev) => prev + 1);
-            setSelectedAnswer(answeredQuestions[currentQuestionIndex + 1] || null);
+            // Check if the current question was skipped
+            let isSkipped = !answeredQuestions.hasOwnProperty(currentQuestionIndex);
+            console.log("isSkipped", isSkipped);
+
+            if (isSkipped && currentQuestion.type === "insert") {
+                console.log("Skipped insert question, auto-saving...");
+                setSkippedInsertQuestion(true); // Trigger auto-save inside InsertQuestion
+            }
+
+            else if (isSkipped && currentQuestion.type === "delete") {
+                console.log("Skipped delete question, auto-saving...");
+                setSkippedDeleteQuestion(true); // Trigger auto-save inside DeleteQuestion
+            }
+
+            else if (isSkipped && currentQuestion.type === "update") {
+                console.log("Skipped update question, auto-saving...");
+                setSkippedUpdateQuestion(true); // Trigger auto-save inside UpdateQuestion
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a delay for the next question
+
+            //setCurrentQuestionIndex((prev) => prev + 1);
+            //setSelectedAnswer(answeredQuestions[currentQuestionIndex + 1] || null);
+            setCurrentQuestionIndex((prev) => {
+                const newIndex = prev + 1;
+                setSelectedAnswer(answeredQuestions[newIndex] || null);
+                return newIndex;
+            });
             setTimeLeft(15);
+
+
         } else {
             navigate("/results", { state: { score, userAnswers: answeredQuestions } });
         }
     };
 
+
+
     const previousQuestion = () => {
         if (currentQuestionIndex > 0) {
-            setCurrentQuestionIndex((prev) => prev - 1);
-            setSelectedAnswer(answeredQuestions[currentQuestionIndex - 1] || null);
-            if (!answeredQuestions[currentQuestionIndex - 1]) setTimeLeft(15);
+            setCurrentQuestionIndex((prev) => {
+                const newIndex = prev - 1;
+                setSelectedAnswer(answeredQuestions[newIndex] || null);
+                if (!answeredQuestions[newIndex]) setTimeLeft(15);
+                return newIndex;
+            });
         }
     };
 
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen px-4 text-white">
-            <Header text={"Array-Quizz"}/>
+            <Header text={"Array-Quizz"} />
             <h1 className="text-3xl font-extrabold mb-6 text-center">📚 Array Quiz</h1>
 
             <div className="w-full max-w-3xl bg-white text-black p-6 rounded-lg shadow-lg">
@@ -119,10 +159,10 @@ const MCQQuiz = () => {
                     </>
                 ) : (
                     currentQuestion.type === "insert" ? (
-                        <InsertQuestion data={currentQuestion} updateUserAnswers={updateUserAnswers} questionIndex={currentQuestionIndex} onCorrect={() => setScore((prev) => prev + 1)} />
+                            <InsertQuestion data={currentQuestion} updateUserAnswers={updateUserAnswers} questionIndex={currentQuestionIndex} isSkipped={skippedInsertQuestion} setSkippedInsertQuestion={setSkippedInsertQuestion} onCorrect={() => setScore((prev) => prev + 1)} />
                     ) : currentQuestion.type === "delete" ? (
-                        <DeleteQuestion data={currentQuestion} updateUserAnswers={updateUserAnswers} questionIndex={currentQuestionIndex} onCorrect={() => setScore((prev) => prev + 1)} />
-                    ) : <UpdateQuestion data={currentQuestion} updateUserAnswers={updateUserAnswers} questionIndex={currentQuestionIndex} onCorrect={() => setScore((prev) => prev + 1)} />
+                                <DeleteQuestion data={currentQuestion} updateUserAnswers={updateUserAnswers} questionIndex={currentQuestionIndex} skippedDeleteQuestion={skippedDeleteQuestion} setSkippedDeleteQuestion={setSkippedDeleteQuestion} onCorrect={() => setScore((prev) => prev + 1)} />
+                            ) : <UpdateQuestion data={currentQuestion} updateUserAnswers={updateUserAnswers} questionIndex={currentQuestionIndex} skippedUpdateQuestion={skippedUpdateQuestion} setSkippedUpdateQuestion={setSkippedUpdateQuestion} onCorrect={() => setScore((prev) => prev + 1)} />
                 )}
 
                 <div className="mt-6 flex flex-col md:flex-row justify-between gap-4">

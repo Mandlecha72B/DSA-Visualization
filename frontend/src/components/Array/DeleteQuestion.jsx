@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const ItemTypes = { NUMBER: "number" };
 
-const DeleteQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) => {
+const DeleteQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex, skippedDeleteQuestion }) => {
     const [array, setArray] = useState([...data.array]);
     const deleteIndex = data.targetIndex;
     const [nextShiftIndex, setNextShiftIndex] = useState(deleteIndex); // Start shifting at the deletion index
@@ -19,6 +19,51 @@ const DeleteQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) =
             }, 100);
         }
     }, [nextShiftIndex, array.length]);
+
+    useEffect(() => {
+        if (skippedDeleteQuestion) {
+            console.log("skippedDeleteQuestion changed:", skippedDeleteQuestion);
+                autoSaveDeleteQuestion();
+            }
+    }, [skippedDeleteQuestion]);
+    
+    const autoSaveDeleteQuestion = () => {
+
+        let correctArray = [...data.array];
+
+        for (let i = deleteIndex; i < correctArray.length - 1; i++) {
+            correctArray[i] = correctArray[i + 1];
+        }
+        correctArray.pop(); // Remove last element
+
+        
+
+        let explanationSteps = [];
+        let tempArray = [...data.array];
+
+        for (let i = deleteIndex; i < tempArray.length - 1; i++) {
+            if (tempArray[i] !== null) {
+                explanationSteps.push(`Shift ${tempArray[i + 1]} → index ${i}`);
+                tempArray[i] = tempArray[i + 1];
+
+            }
+        }
+        tempArray.pop();
+        explanationSteps.push(`Reduce array size from ${data.array.length} to ${tempArray.length}`);
+
+        updateUserAnswers(questionIndex, {
+            initialArray: data.array,
+            userAttempt: "Not Answered",
+            correctArray,
+            targetIndex: deleteIndex,
+            explanation: explanationSteps.join("\n"),
+            isCorrect : false,
+        });
+
+        setSkippedDeleteQuestion(false); // Reset the skipped state
+
+        
+    }
 
 
     const handleShift = useCallback(

@@ -1,14 +1,24 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback , useEffect} from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import toast from "react-hot-toast";
 
 const ItemTypes = { NUMBER: "number" };
 
-const InsertQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) => {
+const InsertQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex, isSkipped, setSkippedInsertQuestion }) => {
     const [array, setArray] = useState(data.array);
     const [spaceCreated, setSpaceCreated] = useState(false);
     const [nextShiftIndex, setNextShiftIndex] = useState(data.array.length - 1);
+
+    useEffect(() => {
+        if (isSkipped) {
+            console.log("skippedInsertQuestion changed:", isSkipped);
+            autoSaveInsertQuestion();
+        }
+    }, [isSkipped]);
+
+    
+
 
     const handleShift = useCallback((dragIndex) => {
         let newArray = [...array];
@@ -34,6 +44,43 @@ const InsertQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) =
         }*/
 
     }, [array, data.targetIndex]);
+    
+  
+
+    const autoSaveInsertQuestion = () => {
+        console.log("Auto-saving skipped insert question...");
+        let correctArray = [...data.array];
+
+        for (let i = correctArray.length - 1; i > data.targetIndex; i--) {
+            correctArray[i] = correctArray[i - 1];
+        }
+        correctArray[data.targetIndex] = data.targetValue;
+
+        let explanationSteps = [];
+        let tempArray = [...data.array];
+
+        for (let i = tempArray.length - 1; i >= data.targetIndex; i--) {
+            if (tempArray[i] !== null) {
+                explanationSteps.push(`Shift ${tempArray[i]} → index ${i + 1}`);
+                tempArray[i + 1] = tempArray[i];
+                tempArray[i] = null;
+            }
+        }
+        explanationSteps.push(`Insert ${data.targetValue} at index ${data.targetIndex}`);
+
+        const insertionResult = {
+            initialArray: data.array,
+            userAttempt: "Not Answered",
+            correctArray,
+            targetValue: data.targetValue,
+            targetIndex: data.targetIndex,
+            explanation: explanationSteps.join("\n"),
+            isCorrect: false,
+        };
+
+        updateUserAnswers(questionIndex, insertionResult);
+        setSkippedInsertQuestion(false); // Reset skipped state
+    };
 
     const handleInsert = useCallback(() => {
         if (!spaceCreated) {
@@ -78,6 +125,7 @@ const InsertQuestion = ({ data, onCorrect, updateUserAnswers, questionIndex }) =
             explanation: explanationSteps.join("\n"),
             isCorrect,
         };
+        console.log("Insertion Result:", insertionResult);
 
         if (isCorrect) {
             setArray(correctArray); // ✅ Only update UI when correct

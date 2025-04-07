@@ -52,9 +52,10 @@ const ResultsPage = () => {
 
                             // ✅ Improved Correctness Check
                             let isCorrect = false;
-                            if (question.type === "insert" || question.type === "delete" || question.type === "update" ) {
+                            if (question.type === "insert" || question.type === "delete" || question.type === "update") {
                                 // ✅ Compare entire arrays instead of one index
-                                isCorrect = JSON.stringify(userAnswer?.userAttempt) === JSON.stringify(userAnswer?.correctArray);
+                                //isCorrect = JSON.stringify(userAnswer?.userAttempt) === JSON.stringify(userAnswer?.correctArray);
+                                isCorrect = userAnswer?.isCorrect;
                             }
                             else {
                                 // Normal MCQ validation
@@ -70,15 +71,30 @@ const ResultsPage = () => {
 
                                     {/* User Answer */}
                                     <p className={`mt-2 text-sm font-medium flex items-center gap-2 ${isCorrect ? "text-green-500" : "text-red-500"}`}>
-                                        {isCorrect ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
-                                        Your Answer: {userAnswer?.userAttempt ? JSON.stringify(userAnswer.userAttempt) : "Not Answered"}
+                                        {isCorrect ? (
+                                            <CheckCircle className="w-4 h-4 text-green-500" />
+                                        ) : (
+                                            <XCircle className="w-4 h-4 text-red-500" />
+                                        )}
+                                        Your Answer:{" "}
+                                        {question.type === "mcq"
+                                            ? userAnswer ?? "Not Answered"
+                                            : userAnswer?.userAttempt
+                                                ? JSON.stringify(userAnswer.userAttempt)
+                                                : "Not Answered"}
                                     </p>
 
 
                                     {/* Correct Answer (Only for MCQs) */}
-                                    {(question.type !== "insert" || question.type !== "delete" || question.type !== "update") && (
+                                    {(question.type !== "insert" && question.type !== "delete" && question.type !== "update") && (
                                         <p className="text-blue-600 text-sm font-semibold flex items-center gap-2">
                                             ✅ Correct Answer: {question.answer}
+                                        </p>
+                                    )}
+
+                                    {(question.type === "insert" || question.type === "delete" || question.type === "update") && (
+                                        <p className="text-blue-600 text-sm font-semibold flex items-center gap-2">
+                                            ✅ Correct Answer: {JSON.stringify(userAnswer?.correctArray)}
                                         </p>
                                     )}
 

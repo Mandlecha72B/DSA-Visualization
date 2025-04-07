@@ -20,6 +20,12 @@ import ResultsPage from './components/Array/ResultPage';
 import NotesPage from './components/Notes/NotesPage';
 import { useAuthStore } from './components/DiscussionForum/store/useAuthStore';
 import ChatApp from './components/DiscussionForum/ChatApp';
+//import LinkedListTrain from './components/LinkedList/LinkedListTrain';
+import LinkedListSimulation from './components/LinkedList/LinkedListSimulation';
+import LinkedListQuiz from './components/LinkedList/LinkedListQuiz';
+import LinkedListResultPage from './components/LinkedList/LinkedListResultPage';
+import SortingVisualizer from './components/AlgorithmComparison/SortingVisualizer';
+import QuickSortVisualizer from './components/AlgorithmComparison/QuickSortVisualiser';
 
 
 
@@ -63,7 +69,10 @@ function App() {
         <Route path="/array" element={<ArraySimulation handleLogout={handleLogout} />} />
         <Route path='/notes' element={<NotesPage />} />
         <Route path='/discussion-forum' element={<ChatApp />} />
-        
+        <Route path="/linked-list" element={<LinkedListSimulation handleLogout={handleLogout} />} />
+        <Route path="/linked-list-quiz" element={<LinkedListQuiz />} />
+        <Route path="/linked-list-results" element={<LinkedListResultPage />} />
+        <Route path="/algorithm-comparison" element={<SortingVisualizer />} />
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>

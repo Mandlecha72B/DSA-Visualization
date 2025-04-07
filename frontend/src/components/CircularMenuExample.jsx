@@ -70,7 +70,7 @@ export default function CircularMenuExample({ iconSizeOverride, itemSizeOverride
                         <Trophy size={iconSize} />
                     </div>
                 </CircleMenuItem>
-                <CircleMenuItem tooltip="Algorithm Comparison" tooltipPlacement={TooltipPlacement.Left}>
+                <CircleMenuItem tooltip="Algorithm Comparison" tooltipPlacement={TooltipPlacement.Left} onClick={() => window.open("/algorithm-comparison", "_blank")}>
                     <div className="p-2 bg-purple-500 rounded-full text-white hover:bg-purple-600">
                         <BarChart2 size={iconSize} />
                     </div>
