@@ -55,7 +55,7 @@ export default function CircularMenuExample({ iconSizeOverride, itemSizeOverride
                 radius={radius}
                 rotationAngleInclusive={false}
             >
-                <CircleMenuItem tooltip="Chatbot" tooltipPlacement={TooltipPlacement.Left}>
+                <CircleMenuItem tooltip="Chatbot" tooltipPlacement={TooltipPlacement.Left} onClick={() => window.open("/chatbot", "_blank")}>
                     <div className="p-2 bg-blue-500 rounded-full text-white hover:bg-blue-600">
                         <BotMessageSquare size={iconSize} />
                     </div>
@@ -85,7 +85,7 @@ export default function CircularMenuExample({ iconSizeOverride, itemSizeOverride
                     </div>
                 </CircleMenuItem>
 
-                <CircleMenuItem tooltip="Coding" tooltipPlacement={TooltipPlacement.Left}>
+                <CircleMenuItem tooltip="Coding" tooltipPlacement={TooltipPlacement.Left} onClick={() => window.open("/coding", "_blank")}>
                     <div className="p-2 bg-gray-500 rounded-full text-white hover:bg-gray-600">
                         <SquareTerminal size={iconSize} />
                     </div>

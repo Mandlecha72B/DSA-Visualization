@@ -429,8 +429,147 @@ const QuickSortVisualizer = ({ array }) => {
 
 export default QuickSortVisualizer;*/
 
-import React, { useEffect, useState } from "react";
+/*import React, { useEffect, useState } from "react";
 import { getQuickSortRecursiveSteps } from "./utils/QuickSort";
+
+const ArrayNode = ({ stepGroup, onComplete }) => {
+    const [currentStep, setCurrentStep] = useState(0);
+    const [showChildren, setShowChildren] = useState(false);
+    const [childrenDone, setChildrenDone] = useState({ left: false, right: false });
+
+    const step = stepGroup?.steps?.[currentStep];
+
+    const getColor = (index, highlights) => {
+        if (highlights?.sorted?.includes(index)) return "bg-green-500";
+        if (highlights?.swapping?.includes(index)) return "bg-red-400";
+        if (highlights?.comparing?.includes(index)) return "bg-yellow-400";
+        if (index === highlights?.pivot) return "bg-purple-500";
+        return "bg-blue-600";
+    };
+
+    const getPointers = (index) => {
+        const pointers = [];
+        if (index === step?.highlights?.low) pointers.push("L");
+        if (index === step?.highlights?.high) pointers.push("H");
+        if (index === step?.highlights?.pivot) pointers.push("P");
+        return pointers.join(", ");
+    };
+
+    useEffect(() => {
+        if (!stepGroup?.steps?.length) {
+            setShowChildren(true);
+            return;
+        }
+
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i >= stepGroup.steps.length) {
+                clearInterval(interval);
+                setShowChildren(true);
+                return;
+            }
+            setCurrentStep(i);
+            i++;
+        }, 800);
+
+        return () => clearInterval(interval);
+    }, [stepGroup]);
+
+    useEffect(() => {
+        if (showChildren && (!stepGroup.left && !stepGroup.right)) {
+            onComplete?.();
+        }
+    }, [showChildren]);
+
+    useEffect(() => {
+        if (
+            showChildren &&
+            (stepGroup.left ? childrenDone.left : true) &&
+            (stepGroup.right ? childrenDone.right : true)
+        ) {
+            onComplete?.();
+        }
+    }, [childrenDone, showChildren]);
+
+    return (
+        <div className="flex flex-col items-center mt-4">
+            {/* Main Array }
+            <div className="flex gap-2 justify-center flex-wrap">
+                {step?.array?.map((num, idx) => (
+                    <div key={idx} className="flex flex-col items-center">
+                        <span className={`p-2 rounded text-white font-bold ${getColor(idx, step?.highlights)}`}>
+                            {num}
+                        </span>
+                        <span className="text-xs text-gray-400 mt-1 h-4">{getPointers(idx)}</span>
+                    </div>
+                ))}
+            </div>
+
+            {/* Subarrays }
+            {showChildren && (
+                <div className="flex justify-between w-full mt-4 gap-10">
+                    {stepGroup.left && (
+                        <ArrayNode
+                            stepGroup={stepGroup.left}
+                            onComplete={() => setChildrenDone(prev => ({ ...prev, left: true }))}
+                        />
+                    )}
+                    {stepGroup.right && (
+                        <ArrayNode
+                            stepGroup={stepGroup.right}
+                            onComplete={() => setChildrenDone(prev => ({ ...prev, right: true }))}
+                        />
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+const QuickSortVisualizer = ({ array }) => {
+    const [treeSteps, setTreeSteps] = useState(null);
+    const [isCompleted, setIsCompleted] = useState(false);
+    const [executionTime, setExecutionTime] = useState(0);
+
+    useEffect(() => {
+        const { steps, executionTime } = getQuickSortRecursiveSteps(array);
+        setExecutionTime(executionTime);
+        setTreeSteps(steps?.[0]);
+        setIsCompleted(false);
+    }, [array]);
+
+    return (
+        <div className="overflow-x-auto max-h-[280px]">
+            {treeSteps && (
+                <ArrayNode
+                    stepGroup={treeSteps}
+                    onComplete={() => setIsCompleted(true)}
+                />
+            )}
+
+            {isCompleted && (
+                <div className="mt-6 text-center">
+                    <h4 className="text-sm font-semibold text-green-400">Final Sorted Array</h4>
+                    <div className="flex justify-center flex-wrap gap-2 mt-2">
+                        {array
+                            .slice()
+                            .sort((a, b) => a - b)
+                            .map((num, idx) => (
+                                <span key={idx} className="p-2 bg-green-500 rounded text-white font-bold">
+                                    {num}
+                                </span>
+                            ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default QuickSortVisualizer;*/
+
+import React, { useEffect, useState } from "react";
+
 
 const ArrayNode = ({ stepGroup, onComplete }) => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -526,20 +665,27 @@ const ArrayNode = ({ stepGroup, onComplete }) => {
     );
 };
 
-const QuickSortVisualizer = ({ array }) => {
+const QuickSortVisualizer = ({ steps, array, sorting }) => {  
     const [treeSteps, setTreeSteps] = useState(null);
     const [isCompleted, setIsCompleted] = useState(false);
-    const [executionTime, setExecutionTime] = useState(0);
 
     useEffect(() => {
-        const { steps, executionTime } = getQuickSortRecursiveSteps(array);
-        setExecutionTime(executionTime);
-        setTreeSteps(steps?.[0]);
-        setIsCompleted(false);
-    }, [array]);
+        // Reset tree before assigning new one
+        setTreeSteps(null); // Clear old tree (forces unmount)
+        setIsCompleted(false); // Reset completion state
 
+        // Slight delay to allow unmount (ensures full reset)
+       
+            if (steps && sorting) {
+                setTreeSteps(steps[0]);
+                setIsCompleted(false);
+            }
+       
+
+        
+    }, [steps, array]);
     return (
-        <div className="overflow-x-auto max-h-[280px]">
+        <div className="max-h-[300px]">
             {treeSteps && (
                 <ArrayNode
                     stepGroup={treeSteps}
@@ -567,6 +713,13 @@ const QuickSortVisualizer = ({ array }) => {
 };
 
 export default QuickSortVisualizer;
+
+
+
+
+
+
+
 
 
 

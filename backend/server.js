@@ -132,6 +132,7 @@ const noteRouter = require('./routes/note.route');
 const messageRoutes = require('./routes/message.route');
 const userRoutes = require('./routes/user.route');
 const { app, server } = require('./socket/socket');
+const codeVisualizerRouter = require('./routes/codeVisualizer.route')
 
 
 dotenv.config();
@@ -152,6 +153,7 @@ app.use('/api/user', authRouter);
 app.use('/api/note', noteRouter);
 app.use('/api/messages', messageRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/codeVisualizer', codeVisualizerRouter)
 
 server.listen(PORT, () => {
     connectToMongoDB();

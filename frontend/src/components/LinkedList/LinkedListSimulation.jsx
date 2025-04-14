@@ -617,7 +617,7 @@ const LinkedListSimulation = ({ handleLogout }) => {
                 return;
             }
 
-            if (!compartments[pos-1] || compartments[pos-1].number !== newCompartmentNumber) {
+            if (!compartments[pos - 1] || compartments[pos - 1].number !== parseInt(newCompartmentNumber, 10)) {
                 alert(`Compartment number ${newCompartmentNumber} does not match the compartment at position ${pos}.`);
                 return;
             }

@@ -25,7 +25,14 @@ import LinkedListSimulation from './components/LinkedList/LinkedListSimulation';
 import LinkedListQuiz from './components/LinkedList/LinkedListQuiz';
 import LinkedListResultPage from './components/LinkedList/LinkedListResultPage';
 import SortingVisualizer from './components/AlgorithmComparison/SortingVisualizer';
-import QuickSortVisualizer from './components/AlgorithmComparison/QuickSortVisualiser';
+
+import ChatBot from './components/Chatbot/Chatbot';
+import CodeVisualizer from './components/CodingVisualizer/CodeVisualizer';
+import StackSimulation from './components/Stack/StackSimulation';
+import StackQuiz from './components/Stack/StackQuiz';
+import StackResultsPage from './components/Stack/StackResult';
+
+import CodeEditorWithVisualizer from './components/CodingVisualizer/CodeEditorWithVisualizer';
 
 
 
@@ -72,7 +79,13 @@ function App() {
         <Route path="/linked-list" element={<LinkedListSimulation handleLogout={handleLogout} />} />
         <Route path="/linked-list-quiz" element={<LinkedListQuiz />} />
         <Route path="/linked-list-results" element={<LinkedListResultPage />} />
+        <Route path="/stack" element={<StackSimulation handleLogout={handleLogout} />} />
+        <Route path="/stack-quiz" element={<StackQuiz />} />
+        <Route path="/stack-results" element={<StackResultsPage/>} />
         <Route path="/algorithm-comparison" element={<SortingVisualizer />} />
+        <Route path="/coding-visualizer" element={<CodeEditorWithVisualizer />} />
+        <Route path="/coding" element={<CodeVisualizer />} />
+        <Route path="/chatbot" element={<ChatBot />} />
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
